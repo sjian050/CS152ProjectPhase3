@@ -1,5 +1,7 @@
-   /* cs152-miniL phase3 */
-   
+/* 
+cs152-mini_l phase3 
+*/
+
 %{   
    #include "y.tab.h"
    int currLine = 1, currPos = 1;
@@ -10,9 +12,8 @@ DIGIT    [0-9]
 LETTER   [a-zA-Z]
 COMMENT  ##.*
 ID       ({LETTER})(({LETTER}|{DIGIT})_?)*
-   
-%%
 
+%%
 
 function       { currPos += yyleng; return FUNCTION;}
 beginparams    { currPos += yyleng; return BEGIN_PARAMS;}
@@ -23,13 +24,11 @@ beginbody      { currPos += yyleng; return BEGIN_BODY;}
 endbody        { currPos += yyleng; return END_BODY;}
 integer        { currPos += yyleng; return INTEGER;}
 array          { currPos += yyleng; return ARRAY;}
-enum           { currPos += yyleng; return ENUM;}
 of             { currPos += yyleng; return OF;}
 if             { currPos += yyleng; return IF;}
 then           { currPos += yyleng; return THEN;}
 endif          { currPos += yyleng; return ENDIF;}
 else           { currPos += yyleng; return ELSE;}
-for            { currPos += yyleng; return FOR;}
 while          { currPos += yyleng; return WHILE;}
 do             { currPos += yyleng; return DO;}
 beginloop      { currPos += yyleng; return BEGINLOOP;}
@@ -62,7 +61,7 @@ return         { currPos += yyleng; return RETURN;}
 
 
 {DIGIT}+       { currPos += yyleng; yylval.numVal = atoi(yytext); return NUMBER;}
-{ID}           { currPos += yyleng; yylval.identVal = yytext; return IDENT;}
+{ID}           { currPos += yyleng; yylval.identVal = strdup(yytext); return IDENT;}
 {COMMENT}      { currLine++; currPos = 1;}
 
 ";"            { currPos += yyleng; return SEMICOLON;}
@@ -78,10 +77,10 @@ return         { currPos += yyleng; return RETURN;}
 
 "\n"           {currLine++; currPos = 1;}
 
-.                                        {printf("Error at line %d, column %d: unrecognized symbol \"%s\"\n", currLine, currPos, yytext); exit(0);}
-({DIGIT})({LETTER}|{DIGIT}|[_])*         {printf("Error at line %d, column %d: Identifier \"%s\" must begin with a letter\n", currLine, currPos, yytext); exit(0);}
-{LETTER}({LETTER}|{DIGIT})*[_]          {printf("Error at line %d, column %d: Identifier \"%s\" cannot end with an underscore\n", currLine, currPos, yytext); exit(0);}
 
+({DIGIT})({LETTER}|{DIGIT}|[_])*         {printf("Error at line %d, column %d: Identifier \"%s\" must begin with a letter\n", currLine, currPos, yytext); exit(0);}
+{LETTER}({LETTER}|{DIGIT})*[_]           {printf("Error at line %d, column %d: Identifier \"%s\" cannot end with an underscore\n", currLine, currPos, yytext); exit(0);}
+.                                        {printf("Error at line %d, column %d: unrecognized symbol \"%s\"\n", currLine, currPos, yytext); exit(0);}
 
 %%
 
@@ -101,4 +100,3 @@ return         { currPos += yyleng; return RETURN;}
   }
    yylex();
 } */
-
